@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Tracking() {
   const [orderId, setOrderId] = useState('');
@@ -25,30 +26,57 @@ export default function Tracking() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
-      <h2 className="text-2xl font-bold text-purple-600 text-center mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-md rounded-xl"
+    >
+      <motion.h2
+        className="text-2xl font-bold text-purple-600 text-center mb-6"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         Track Your Laundry Status 📍
-      </h2>
-      <input
+      </motion.h2>
+
+      <motion.input
         type="text"
         placeholder="Enter Order ID or Phone Number"
         className="w-full p-3 border rounded-md mb-4"
         value={orderId}
         onChange={(e) => setOrderId(e.target.value)}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
       />
-      <button
+
+      <motion.button
         onClick={handleTrack}
         className="w-full bg-purple-600 text-white p-3 rounded-md hover:bg-purple-700"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ delay: 0.4 }}
       >
         Check Status
-      </button>
+      </motion.button>
 
-      {status && (
-        <div className="mt-6 text-center">
-          <p className="text-lg font-medium text-gray-700">Current Status:</p>
-          <p className="mt-2 text-2xl font-bold text-purple-800">{status}</p>
-        </div>
-      )}
-    </div>
+      <AnimatePresence>
+        {status && (
+          <motion.div
+            className="mt-6 text-center"
+            key={status}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <p className="text-lg font-medium text-gray-700">Current Status:</p>
+            <p className="mt-2 text-2xl font-bold text-purple-800">{status}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
