@@ -5,6 +5,7 @@ import axios from 'axios';
 export default function Tracking() {
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState(null);
+  const [name, setName] = useState(null);
   const [error, setError] = useState(null);
 
   const handleTrack = async () => {
@@ -20,13 +21,16 @@ export default function Tracking() {
 
       if (res.data && res.data.status) {
         setStatus(res.data.status);
+        setName(res.data.name);
         setError(null);
       } else {
         setStatus(null);
+        setName(null);
         setError('Order not found');
       }
     } catch (err) {
       setStatus(null);
+      setName(null);
       setError('Something went wrong. Try again.');
       console.error(err);
     }
@@ -53,7 +57,12 @@ export default function Tracking() {
         placeholder="Enter your Phone Number"
         className="w-full p-3 border rounded-md mb-4"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={(e) => {
+          setPhone(e.target.value);
+          setStatus(null);
+          setError(null);
+          setName(null);
+        }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
@@ -70,30 +79,32 @@ export default function Tracking() {
       </motion.button>
 
       <AnimatePresence>
-        {status && (
+        {(status || error) && (
           <motion.div
             className="mt-6 text-center"
-            key={status}
+            key="result"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <p className="text-lg font-medium text-gray-700">Current Status:</p>
-            <p className="mt-2 text-2xl font-bold text-purple-800">{status}</p>
-          </motion.div>
-        )}
+            {name && (
+              <>
+                <p className="text-lg font-medium text-gray-700">Customer:</p>
+                <p className="text-xl font-semibold text-blue-800">{name}</p>
+              </>
+            )}
 
-        {error && (
-          <motion.div
-            className="mt-6 text-center text-red-600 font-medium"
-            key="error"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            {error}
+            {status && (
+              <>
+                <p className="mt-4 text-lg font-medium text-gray-700">Current Status:</p>
+                <p className="mt-2 text-2xl font-bold text-purple-800">{status}</p>
+              </>
+            )}
+
+            {error && (
+              <p className="mt-4 text-red-600 font-medium">{error}</p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

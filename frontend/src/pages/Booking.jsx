@@ -44,8 +44,19 @@ export default function Booking() {
     setLoading(true);
     setStatusMessage('');
 
+    // ✅ Convert services object to array of selected services
+    const selectedServices = Object.entries(formData.services)
+      .filter(([_, value]) => value)
+      .map(([key]) => key);
+
+    const payload = {
+      ...formData,
+      services: selectedServices,
+      clothCount: parseInt(formData.clothCount),
+    };
+
     try {
-      const response = await axios.post('http://localhost:5000/api/orders', formData);
+      const response = await axios.post('http://localhost:5000/api/orders', payload);
       console.log('Order response:', response.data);
       setStatusMessage('✅ Laundry Pickup Booked Successfully!');
       setFormData({
@@ -122,7 +133,7 @@ export default function Booking() {
               { key: 'washing', label: 'Washing 🧼' },
               { key: 'drying', label: 'Drying 🌬' },
               { key: 'ironing', label: 'Ironing 👕' },
-            ].map((service, idx) => (
+            ].map((service) => (
               <label key={service.key} className="flex items-center space-x-2">
                 <input
                   type="checkbox"

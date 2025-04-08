@@ -1,22 +1,22 @@
-// // routes/orderRoutes.js
-// const express = require('express');
-// const router = express.Router();
-// const { createOrder, getAllOrders } = require('../controllers/orderController');
-
-// router.post('/', createOrder);
-// router.get('/', getAllOrders);
-
-// module.exports = router;
 const express = require('express');
 const router = express.Router();
 const {
   createOrder,
   getAllOrders,
   trackOrderByPhone,
+  updateOrderStatus,
 } = require('../controllers/orderController');
 
+// Create a new order
 router.post('/', createOrder);
+
+// Get all orders
 router.get('/', getAllOrders);
-router.get('/track', trackOrderByPhone); // Track order by phone number
+
+// Track order by phone number
+router.get('/track', trackOrderByPhone);
+
+// Update order status by ID
+router.put('/:id/status', updateOrderStatus);
 
 module.exports = router;
